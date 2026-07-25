@@ -197,7 +197,7 @@
 
 <header>
   <a href="index.html" class="logo">Logis<span>229</span></a>
-  <button class="btn-publish" onclick="window.location.href='publier.html'">Publier une annonce</button>
+  <button class="btn-publish" onclick="allerPublier()">Publier une annonce</button>
 </header>
 
 <a href="index.html" class="back-link">← Retour aux annonces</a>
@@ -407,9 +407,17 @@
     }
   }
 
+  function allerPublier() {
+    const token = localStorage.getItem('logis229_token');
+    if (token) {
+      window.location.href = 'publier.html';
+    } else {
+      window.location.href = 'connexion.html?redirect=publier.html';
+    }
+  }
+
   chargerAnnonce();
 </script>
 
 </body>
-  </html>
-  
+</html>
