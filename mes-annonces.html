@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes annonces — Logis229</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #14213D;
+    --terracotta: #C1502E;
+    --terracotta-dark: #A43F22;
+    --cream: #FBF7F1;
+    --cream-dim: #F1EAE0;
+    --slate: #3A3F4B;
+    --slate-soft: #6B7080;
+    --green: #2E7D5B;
+    --border: #E4DDD1;
+    --red: #B3261E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--slate);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Fraunces', serif;
+    color: var(--navy);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  header {
+    background: var(--navy);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--cream); }
+  .logo span { color: var(--terracotta); }
+  .header-actions { display: flex; align-items: center; gap: 16px; }
+  .header-user { color: var(--cream); font-size: 13px; opacity: 0.8; }
+  .btn-deconnexion {
+    color: rgba(251,247,241,0.6);
+    font-size: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    text-decoration: underline;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  .page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .page-head h1 { font-size: 26px; }
+
+  .btn-nouvelle {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-nouvelle:hover { background: var(--terracotta-dark); }
+
+  .annonce-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .annonce-thumb {
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--cream-dim), var(--border));
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-soft);
+    font-size: 10px;
+    text-align: center;
+  }
+  .annonce-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  .annonce-info { flex: 1; min-width: 180px; }
+  .annonce-info h3 { font-size: 16px; margin-bottom: 3px; }
+  .annonce-meta { font-size: 13px; color: var(--slate-soft); margin-bottom: 6px; }
+  .annonce-prix { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--navy); font-size: 14px; }
+
+  .statut-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 100px;
+    margin-left: 8px;
+  }
+  .statut-disponible { background: rgba(46,125,91,0.1); color: var(--green); }
+  .statut-loue, .statut-vendu { background: rgba(107,112,128,0.12); color: var(--slate-soft); }
+
+  .annonce-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .btn-action {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    color: var(--slate);
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-action.danger { color: var(--red); border-color: rgba(179,38,30,0.3); }
+  .btn-action.primary { color: var(--terracotta); border-color: rgba(193,80,46,0.3); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--slate-soft);
+  }
+  .empty-state a { color: var(--terracotta); font-weight: 600; }
+
+  .not-logged { text-align: center; padding: 60px 20px; color: var(--slate-soft); }
+  .not-logged a { color: var(--terracotta); font-weight: 600; }
+
+  /* ---------- MODALE PHOTO ---------- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(20,33,61,0.6);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+  }
+  .modal-box h3 { font-size: 18px; margin-bottom: 14px; }
+  .modal-box input[type="file"] {
+    width: 100%;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-feedback { font-size: 13px; margin-top: 10px; text-align: center; }
+  .modal-feedback.success { color: var(--green); }
+  .modal-feedback.error { color: var(--red); }
+
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Logis<span>229</span></a>
+  <div class="header-actions">
+    <span class="header-user" id="header-user"></span>
+    <button class="btn-deconnexion" onclick="deconnexion()">Déconnexion</button>
+  </div>
+</header>
+
+<div class="container">
+  <div id="zone-non-connecte" class="not-logged" style="display:none;">
+    Tu dois être connecté en tant que propriétaire pour voir tes annonces.<br><br>
+    <a href="connexion.html?redirect=mes-annonces.html">Se connecter</a>
+  </div>
+
+  <div id="zone-contenu" style="display:none;">
+    <div class="page-head">
+      <h1>Mes annonces</h1>
+      <button class="btn-nouvelle" onclick="window.location.href='publier.html'">+ Nouvelle annonce</button>
+    </div>
+
+    <div id="liste-annonces"></div>
+  </div>
+</div>
+
+<!-- Modale d'ajout de photo -->
+<div class="modal-overlay" id="modal-photo">
+  <div class="modal-box">
+    <h3>Ajouter une photo</h3>
+    <input type="file" id="input-photo" accept="image/*">
+    <div class="modal-actions">
+      <button class="btn-action" onclick="fermerModale()">Annuler</button>
+      <button class="btn-action primary" id="btn-envoyer-photo" onclick="envoyerPhoto()">Envoyer</button>
+    </div>
+    <div class="modal-feedback" id="modal-feedback"></div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = 'https://immo-benin-backend.onrender.com/api';
+  const token = localStorage.getItem('logis229_token');
+  const userJson = localStorage.getItem('logis229_user');
+  const user = userJson ? JSON.parse(userJson) : null;
+  let annonceIdPourPhoto = null;
+
+  if (!token || !user || user.role !== 'proprietaire') {
+    document.getElementById('zone-non-connecte').style.display = 'block';
+  } else {
+    document.getElementById('zone-contenu').style.display = 'block';
+    document.getElementById('header-user').textContent = user.nom;
+    chargerMesAnnonces();
+  }
+
+  function deconnexion() {
+    localStorage.removeItem('logis229_token');
+    localStorage.removeItem('logis229_user');
+    window.location.href = 'index.html';
+  }
+
+  function formaterPrix(prix) {
+    return new Intl.NumberFormat('fr-FR').format(prix);
+  }
+
+  function labelType(type) {
+    const labels = { maison: 'Maison', appartement: 'Appartement', terrain: 'Terrain', boutique: 'Boutique' };
+    return labels[type] || type;
+  }
+
+  async function chargerMesAnnonces() {
+    const liste = document.getElementById('liste-annonces');
+    liste.innerHTML = '<p style="color:var(--slate-soft); font-size:14px;">Chargement…</p>';
+
+    try {
+      // On récupère toutes les annonces puis on filtre celles du propriétaire connecté
+      // (une route dédiée /api/annonces/mes-annonces pourra remplacer ça plus tard)
+      const response = await fetch(`${API_BASE}/annonces`);
+      const data = await response.json();
+      const mesAnnonces = data.annonces.filter(a => a.proprietaire_id === user.id);
+
+      if (mesAnnonces.length === 0) {
+        liste.innerHTML = `
+          <div class="empty-state">
+            Tu n'as pas encore d'annonce.<br><br>
+            <a href="publier.html">Publier ta première annonce</a>
+          </div>
+        `;
+        return;
+      }
+
+      liste.innerHTML = mesAnnonces.map(a => `
+        <div class="annonce-item" data-id="${a.id}">
+          <div class="annonce-thumb" id="thumb-${a.id}">Photo</div>
+          <div class="annonce-info">
+            <h3>${a.titre}</h3>
+            <div class="annonce-meta">
+              ${labelType(a.type)} · ${a.quartier ? a.quartier + ', ' : ''}${a.ville}
+              <span class="statut-badge statut-${a.statut}">${a.statut}</span>
+            </div>
+            <div class="annonce-prix">${formaterPrix(a.prix)} FCFA</div>
+          </div>
+          <div class="annonce-actions">
+            <button class="btn-action primary" onclick="ouvrirModalePhoto(${a.id})">+ Photo</button>
+            <button class="btn-action" onclick="voirAnnonce(${a.id})">Voir</button>
+            <button class="btn-action danger" onclick="supprimerAnnonce(${a.id})">Supprimer</button>
+          </div>
+        </div>
+      `).join('');
+
+      mesAnnonces.forEach(a => chargerMiniature(a.id));
+    } catch (error) {
+      liste.innerHTML = '<p style="color:var(--red); font-size:14px;">Erreur lors du chargement de tes annonces.</p>';
+    }
+  }
+
+  async function chargerMiniature(annonceId) {
+    try {
+      const response = await fetch(`${API_BASE}/annonces/${annonceId}`);
+      const data = await response.json();
+      if (data.photos && data.photos.length > 0) {
+        const thumb = document.getElementById(`thumb-${annonceId}`);
+        thumb.innerHTML = `<img src="${data.photos[0].url}" alt="Photo de l'annonce">`;
+      }
+    } catch (error) {
+      // silencieux : la vignette reste "Photo" par défaut
+    }
+  }
+
+  function voirAnnonce(id) {
+    window.location.href = `annonce.html?id=${id}`;
+  }
+
+  async function supprimerAnnonce(id) {
+    if (!confirm('Supprimer définitivement cette annonce ?')) return;
+
+    try {
+      const response = await fetch(`${API_BASE}/annonces/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+
+      if (response.ok) {
+        chargerMesAnnonces();
+      } else {
+        alert("Erreur lors de la suppression de l'annonce.");
+      }
+    } catch (error) {
+      alert('Erreur de connexion au serveur.');
+    }
+  }
+
+  function ouvrirModalePhoto(annonceId) {
+    annonceIdPourPhoto = annonceId;
+    document.getElementById('modal-photo').classList.add('active');
+    document.getElementById('modal-feedback').textContent = '';
+    document.getElementById('modal-feedback').className = 'modal-feedback';
+    document.getElementById('input-photo').value = '';
+  }
+
+  function fermerModale() {
+    document.getElementById('modal-photo').classList.remove('active');
+  }
+
+  async function envoyerPhoto() {
+    const input = document.getElementById('input-photo');
+    const feedback = document.getElementById('modal-feedback');
+    const btn = document.getElementById('btn-envoyer-photo');
+
+    if (!input.files || input.files.length === 0) {
+      feedback.textContent = 'Choisis une photo avant d\'envoyer.';
+      feedback.className = 'modal-feedback error';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('photo', input.files[0]);
+
+    btn.disabled = true;
+    btn.textContent = 'Envoi…';
+    feedback.textContent = '';
+    feedback.className = 'modal-feedback';
+
+    try {
+      const response = await fetch(`${API_BASE}/annonces/${annonceIdPourPhoto}/photos`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (response.ok) {
+        feedback.textContent = 'Photo ajoutée avec succès !';
+        feedback.className = 'modal-feedback success';
+        chargerMiniature(annonceIdPourPhoto);
+        setTimeout(fermerModale, 900);
+      } else {
+        feedback.textContent = "Erreur lors de l'envoi de la photo.";
+        feedback.className = 'modal-feedback error';
+      }
+    } catch (error) {
+      feedback.textContent = 'Erreur de connexion au serveur.';
+      feedback.className = 'modal-feedback error';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Envoyer';
+  }
+</script>
+
+</body>
+  </html>
+  
