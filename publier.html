@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publier une annonce — Logis229</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #14213D;
+    --terracotta: #C1502E;
+    --terracotta-dark: #A43F22;
+    --cream: #FBF7F1;
+    --cream-dim: #F1EAE0;
+    --slate: #3A3F4B;
+    --slate-soft: #6B7080;
+    --green: #2E7D5B;
+    --border: #E4DDD1;
+    --red: #B3261E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--slate);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2 {
+    font-family: 'Fraunces', serif;
+    color: var(--navy);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  header {
+    background: var(--navy);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--cream); }
+  .logo span { color: var(--terracotta); }
+  .header-user { color: var(--cream); font-size: 13px; opacity: 0.75; }
+
+  .container { max-width: 640px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  .page-head { margin-bottom: 28px; }
+  .page-head h1 { font-size: 26px; margin-bottom: 6px; }
+  .page-head p { color: var(--slate-soft); font-size: 14px; }
+
+  /* ---------- ETAPES ---------- */
+  .steps-indicator {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .step-dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 100px;
+    background: var(--border);
+  }
+  .step-dot.active { background: var(--terracotta); }
+
+  .form-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px;
+  }
+
+  .etape { display: none; flex-direction: column; gap: 16px; }
+  .etape.active { display: flex; }
+
+  .etape-titre { font-size: 17px; margin-bottom: 4px; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--slate); }
+  .field .hint { font-size: 11px; color: var(--slate-soft); font-weight: 400; }
+  .field input, .field select, .field textarea {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 12px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--navy);
+    width: 100%;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: 2px solid var(--terracotta);
+    outline-offset: 1px;
+  }
+
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .type-card {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate-soft);
+    background: white;
+  }
+  .type-card.active {
+    border-color: var(--terracotta);
+    background: rgba(193,80,46,0.08);
+    color: var(--terracotta);
+  }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+  .checkbox-field input { width: auto; }
+
+  .form-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .btn {
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-secondary {
+    background: var(--cream-dim);
+    color: var(--slate);
+  }
+  .btn-primary {
+    background: var(--terracotta);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--terracotta-dark); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 2px; }
+
+  .feedback {
+    font-size: 13px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+  }
+  .feedback.error { background: rgba(179,38,30,0.08); color: var(--red); display: block; }
+  .feedback.success { background: rgba(46,125,91,0.08); color: var(--green); display: block; }
+
+  .success-block { text-align: center; padding: 20px 0; display: none; }
+  .success-block .icon { font-size: 40px; margin-bottom: 12px; }
+  .success-block h2 { font-size: 22px; margin-bottom: 8px; }
+  .success-block p { color: var(--slate-soft); font-size: 14px; margin-bottom: 22px; }
+
+  .not-logged {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--slate-soft);
+  }
+  .not-logged a { color: var(--terracotta); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Logis<span>229</span></a>
+  <span class="header-user" id="header-user"></span>
+</header>
+
+<div class="container">
+  <div id="zone-non-connecte" class="not-logged" style="display:none;">
+    Tu dois être connecté en tant que propriétaire pour publier une annonce.<br><br>
+    <a href="connexion.html?redirect=publier.html">Se connecter</a>
+  </div>
+
+  <div id="zone-formulaire" style="display:none;">
+    <div class="page-head">
+      <h1>Publier une annonce</h1>
+      <p>Quelques informations, et ton bien sera visible par des milliers de personnes.</p>
+    </div>
+
+    <div class="steps-indicator">
+      <div class="step-dot active" id="dot-1"></div>
+      <div class="step-dot" id="dot-2"></div>
+      <div class="step-dot" id="dot-3"></div>
+    </div>
+
+    <div class="form-card">
+      <div class="feedback" id="feedback"></div>
+
+      <form id="form-annonce">
+        <!-- ETAPE 1 : TYPE + LOCALISATION -->
+        <div class="etape active" id="etape-1">
+          <div class="etape-titre">1. Quel type de bien, et où ?</div>
+
+          <div class="field">
+            <label>Type de bien</label>
+            <div class="type-grid">
+              <div class="type-card active" data-type="maison">🏠 Maison</div>
+              <div class="type-card" data-type="appartement">🏢 Appartement</div>
+              <div class="type-card" data-type="terrain">📐 Terrain</div>
+              <div class="type-card" data-type="boutique">🏪 Boutique</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-titre">Titre de l'annonce</label>
+            <input type="text" id="f-titre" placeholder="Ex : Belle maison 3 chambres à Fidjrossè" required>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <label for="f-ville">Ville</label>
+              <input type="text" id="f-ville" placeholder="Ex : Cotonou" required>
+            </div>
+            <div class="field">
+              <label for="f-quartier">Quartier</label>
+              <input type="text" id="f-quartier" placeholder="Ex : Fidjrossè">
+            </div>
+          </div>
+
+          <div class="form-nav">
+            <span></span>
+            <button type="button" class="btn btn-primary" onclick="allerEtape(2)">Continuer</button>
+          </div>
+        </div>
+
+        <!-- ETAPE 2 : CARACTERISTIQUES + PRIX -->
+        <div class="etape" id="etape-2">
+          <div class="etape-titre">2. Caractéristiques et prix</div>
+
+          <div class="row-2">
+            <div class="field" id="champ-chambres">
+              <label for="f-chambres">Nombre de chambres</label>
+              <input type="number" id="f-chambres" min="0" placeholder="Ex : 3">
+            </div>
+            <div class="field" id="champ-superficie">
+              <label for="f-superficie">Superficie (m²)</label>
+              <input type="number" id="f-superficie" min="0" placeholder="Ex : 400">
+            </div>
+          </div>
+
+          <div class="field" id="champ-meuble">
+            <div class="checkbox-field">
+              <input type="checkbox" id="f-meuble">
+              <label for="f-meuble" style="font-weight:400;">Ce logement est meublé</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-prix">Prix (FCFA)</label>
+            <span class="hint" id="prix-hint">Par mois, si c'est une location</span>
+            <input type="number" id="f-prix" min="0" required placeholder="Ex : 120000">
+          </div>
+
+          <div class="form-nav">
+            <button type="button" class="btn btn-secondary" onclick="allerEtape(1)">Retour</button>
+            <button type="button" class="btn btn-primary" onclick="allerEtape(3)">Continuer</button>
+          </div>
+        </div>
+
+        <!-- ETAPE 3 : RECAPITULATIF -->
+        <div class="etape" id="etape-3">
+          <div class="etape-titre">3. Vérifie et publie</div>
+          <div id="recap" style="font-size:14px; background:var(--cream-dim); border-radius:10px; padding:16px;"></div>
+          <p style="font-size:12px; color:var(--slate-soft);">Tu pourras ajouter des photos juste après la publication.</p>
+
+          <div class="form-nav">
+            <button type="button" class="btn btn-secondary" onclick="allerEtape(2)">Retour</button>
+            <button type="submit" class="btn btn-primary" id="btn-publier">Publier l'annonce</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="success-block" id="success-block">
+        <div class="icon">✅</div>
+        <h2>Annonce publiée !</h2>
+        <p>Elle est désormais visible par tous les clients qui cherchent dans cette zone.</p>
+        <a href="index.html" class="btn btn-primary" style="display:inline-block;">Retour à l'accueil</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = 'https://immo-benin-backend.onrender.com/api';
+  let typeSelectionne = 'maison';
+  let etapeActuelle = 1;
+
+  const token = localStorage.getItem('logis229_token');
+  const userJson = localStorage.getItem('logis229_user');
+  const user = userJson ? JSON.parse(userJson) : null;
+
+  if (!token || !user || user.role !== 'proprietaire') {
+    document.getElementById('zone-non-connecte').style.display = 'block';
+  } else {
+    document.getElementById('zone-formulaire').style.display = 'block';
+    document.getElementById('header-user').textContent = user.nom;
+  }
+
+  document.querySelectorAll('.type-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      typeSelectionne = card.dataset.type;
+      ajusterChampsSelonType();
+    });
+  });
+
+  function ajusterChampsSelonType() {
+    const champChambres = document.getElementById('champ-chambres');
+    const champMeuble = document.getElementById('champ-meuble');
+    const champSuperficie = document.getElementById('champ-superficie');
+    const prixHint = document.getElementById('prix-hint');
+
+    const estLogement = typeSelectionne === 'maison' || typeSelectionne === 'appartement';
+
+    champChambres.style.display = estLogement ? 'flex' : 'none';
+    champMeuble.style.display = estLogement ? 'block' : 'none';
+    champSuperficie.style.display = 'flex';
+
+    prixHint.textContent = estLogement ? 'Par mois, si c\'est une location' : 'Prix de vente ou de location total';
+  }
+
+  function allerEtape(numero) {
+    if (numero === 3) construireRecap();
+
+    document.querySelectorAll('.etape').forEach(e => e.classList.remove('active'));
+    document.getElementById(`etape-${numero}`).classList.add('active');
+
+    document.querySelectorAll('.step-dot').forEach((d, i) => {
+      d.classList.toggle('active', i < numero);
+    });
+
+    etapeActuelle = numero;
+  }
+
+  function construireRecap() {
+    const titre = document.getElementById('f-titre').value;
+    const ville = document.getElementById('f-ville').value;
+    const quartier = document.getElementById('f-quartier').value;
+    const prix = document.getElementById('f-prix').value;
+
+    document.getElementById('recap').innerHTML = `
+      <strong>${titre || '(sans titre)'}</strong><br>
+      ${typeSelectionne} · ${quartier ? quartier + ', ' : ''}${ville}<br>
+      ${prix ? new Intl.NumberFormat('fr-FR').format(prix) + ' FCFA' : ''}
+    `;
+  }
+
+  document.getElementById('form-annonce').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const feedback = document.getElementById('feedback');
+    const btn = document.getElementById('btn-publier');
+    btn.disabled = true;
+    btn.textContent = 'Publication…';
+
+    const body = {
+      titre: document.getElementById('f-titre').value,
+      ville: document.getElementById('f-ville').value,
+      quartier: document.getElementById('f-quartier').value,
+      type: typeSelectionne,
+      prix: parseInt(document.getElementById('f-prix').value, 10),
+      chambres: document.getElementById('f-chambres').value ? parseInt(document.getElementById('f-chambres').value, 10) : null,
+      meuble: document.getElementById('f-meuble').checked,
+      superficie: document.getElementById('f-superficie').value ? parseInt(document.getElementById('f-superficie').value, 10) : null,
+    };
+
+    try {
+      const response = await fetch(`${API_BASE}/annonces`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        feedback.textContent = data.message || 'Erreur lors de la publication.';
+        feedback.className = 'feedback error';
+        btn.disabled = false;
+        btn.textContent = "Publier l'annonce";
+        return;
+      }
+
+      document.getElementById('form-annonce').style.display = 'none';
+      document.getElementById('success-block').style.display = 'block';
+    } catch (error) {
+      feedback.textContent = 'Erreur de connexion au serveur. Réessaie.';
+      feedback.className = 'feedback error';
+      btn.disabled = false;
+      btn.textContent = "Publier l'annonce";
+    }
+  });
+
+  ajusterChampsSelonType();
+</script>
+
+</body>
+  </html>
+  
