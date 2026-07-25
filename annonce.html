@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root {
     --navy: #14213D;
@@ -186,6 +188,15 @@
   .message-feedback.success { color: var(--green); }
   .message-feedback.error { color: var(--terracotta); }
 
+  .carte-bloc { margin-top: 24px; }
+  .carte-bloc .spec-label { margin-bottom: 8px; }
+  #carte {
+    height: 220px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
   @media (min-width: 860px) {
     .layout { grid-template-columns: 1.6fr 1fr; align-items: start; }
     .galerie-principale { height: 420px; }
@@ -231,6 +242,11 @@
         <div>
           <div class="spec-label" style="margin-bottom:8px;">Description</div>
           <p id="description" style="font-size:14px; color:var(--slate);">Contactez le propriétaire pour obtenir plus de détails sur ce bien, organiser une visite ou négocier les conditions.</p>
+        </div>
+
+        <div class="carte-bloc" id="carte-bloc" style="display:none;">
+          <div class="spec-label">Localisation</div>
+          <div id="carte"></div>
         </div>
       </div>
 
@@ -368,6 +384,23 @@
     });
   }
 
+  function afficherCarte(annonce) {
+    if (!annonce.latitude || !annonce.longitude) return;
+
+    const bloc = document.getElementById('carte-bloc');
+    bloc.style.display = 'block';
+
+    const carte = L.map('carte', { zoomControl: false, attributionControl: false }).setView(
+      [annonce.latitude, annonce.longitude], 15
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+    }).addTo(carte);
+
+    L.marker([annonce.latitude, annonce.longitude]).addTo(carte);
+  }
+
   async function chargerAnnonce() {
     if (!annonceId) {
       document.getElementById('etat-chargement').style.display = 'none';
@@ -397,6 +430,7 @@
       `).join('');
 
       afficherGalerie(data.photos);
+      afficherCarte(a);
       afficherZoneContact(a);
 
       document.getElementById('etat-chargement').style.display = 'none';
@@ -420,4 +454,5 @@
 </script>
 
 </body>
-</html>
+  </html>
+  
