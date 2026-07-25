@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion — Logis229</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #14213D;
+    --terracotta: #C1502E;
+    --terracotta-dark: #A43F22;
+    --cream: #FBF7F1;
+    --cream-dim: #F1EAE0;
+    --slate: #3A3F4B;
+    --slate-soft: #6B7080;
+    --green: #2E7D5B;
+    --border: #E4DDD1;
+    --red: #B3261E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--slate);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1, h2 {
+    font-family: 'Fraunces', serif;
+    color: var(--navy);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  header {
+    background: var(--navy);
+    padding: 18px 24px;
+    display: flex;
+    justify-content: center;
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .logo span { color: var(--terracotta); }
+
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .auth-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 28px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 20px 50px -20px rgba(20,33,61,0.15);
+  }
+
+  .auth-card h1 { font-size: 24px; margin-bottom: 6px; text-align: center; }
+  .auth-subtitle {
+    text-align: center;
+    color: var(--slate-soft);
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .tabs {
+    display: flex;
+    background: var(--cream-dim);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 24px;
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 9px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--slate-soft);
+    border: none;
+    background: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .tab.active {
+    background: var(--navy);
+    color: var(--cream);
+  }
+
+  form { display: none; flex-direction: column; gap: 14px; }
+  form.active { display: flex; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--slate);
+  }
+  .field input, .field select {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 12px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--navy);
+  }
+  .field input:focus, .field select:focus {
+    outline: 2px solid var(--terracotta);
+    outline-offset: 1px;
+  }
+
+  .role-toggle {
+    display: flex;
+    gap: 8px;
+  }
+  .role-btn {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate-soft);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .role-btn.active {
+    border-color: var(--terracotta);
+    background: rgba(193,80,46,0.08);
+    color: var(--terracotta);
+  }
+
+  .btn-submit {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    margin-top: 6px;
+  }
+  .btn-submit:hover { background: var(--terracotta-dark); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  button:focus-visible, a:focus-visible, input:focus-visible {
+    outline: 2px solid var(--terracotta);
+    outline-offset: 2px;
+  }
+
+  .feedback {
+    font-size: 13px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+  }
+  .feedback.error { background: rgba(179,38,30,0.08); color: var(--red); display: block; }
+  .feedback.success { background: rgba(46,125,91,0.08); color: var(--green); display: block; }
+
+  .back-home {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--slate-soft);
+  }
+  .back-home:hover { color: var(--navy); }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Logis<span>229</span></a>
+</header>
+
+<main>
+  <div class="auth-card">
+    <h1 id="titre-form">Bienvenue</h1>
+    <p class="auth-subtitle" id="sous-titre-form">Connectez-vous à votre compte Logis229</p>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-connexion">Connexion</button>
+      <button class="tab" id="tab-inscription">Créer un compte</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <form id="form-connexion" class="active">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="login-password">Mot de passe</label>
+        <input type="password" id="login-password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-submit" id="btn-login">Se connecter</button>
+    </form>
+
+    <form id="form-inscription">
+      <div class="field">
+        <label>Je suis</label>
+        <div class="role-toggle">
+          <button type="button" class="role-btn active" data-role="client">Client</button>
+          <button type="button" class="role-btn" data-role="proprietaire">Propriétaire</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="reg-nom">Nom complet</label>
+        <input type="text" id="reg-nom" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="reg-telephone">Téléphone</label>
+        <input type="tel" id="reg-telephone" placeholder="Ex : 97 00 00 00" required autocomplete="tel">
+      </div>
+      <div class="field">
+        <label for="reg-email">Email</label>
+        <input type="email" id="reg-email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="reg-password">Mot de passe</label>
+        <input type="password" id="reg-password" required minlength="6" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn-submit" id="btn-register">Créer mon compte</button>
+    </form>
+
+    <a href="index.html" class="back-home">← Retour à l'accueil</a>
+  </div>
+</main>
+
+<script>
+  const API_BASE = 'https://immo-benin-backend.onrender.com/api';
+  let roleSelectionne = 'client';
+
+  const tabConnexion = document.getElementById('tab-connexion');
+  const tabInscription = document.getElementById('tab-inscription');
+  const formConnexion = document.getElementById('form-connexion');
+  const formInscription = document.getElementById('form-inscription');
+  const titre = document.getElementById('titre-form');
+  const sousTitre = document.getElementById('sous-titre-form');
+  const feedback = document.getElementById('feedback');
+
+  function afficherFeedback(message, type) {
+    feedback.textContent = message;
+    feedback.className = `feedback ${type}`;
+  }
+
+  function cacherFeedback() {
+    feedback.className = 'feedback';
+    feedback.textContent = '';
+  }
+
+  tabConnexion.addEventListener('click', () => {
+    tabConnexion.classList.add('active');
+    tabInscription.classList.remove('active');
+    formConnexion.classList.add('active');
+    formInscription.classList.remove('active');
+    titre.textContent = 'Bienvenue';
+    sousTitre.textContent = 'Connectez-vous à votre compte Logis229';
+    cacherFeedback();
+  });
+
+  tabInscription.addEventListener('click', () => {
+    tabInscription.classList.add('active');
+    tabConnexion.classList.remove('active');
+    formInscription.classList.add('active');
+    formConnexion.classList.remove('active');
+    titre.textContent = 'Créer un compte';
+    sousTitre.textContent = 'Rejoignez Logis229 en quelques secondes';
+    cacherFeedback();
+  });
+
+  document.querySelectorAll('.role-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      roleSelectionne = btn.dataset.role;
+    });
+  });
+
+  function apresConnexionReussie(token, user) {
+    localStorage.setItem('logis229_token', token);
+    localStorage.setItem('logis229_user', JSON.stringify(user));
+
+    const params = new URLSearchParams(window.location.search);
+    const redirection = params.get('redirect');
+    window.location.href = redirection || 'index.html';
+  }
+
+  formConnexion.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    cacherFeedback();
+    const btn = document.getElementById('btn-login');
+    btn.disabled = true;
+    btn.textContent = 'Connexion…';
+
+    try {
+      const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('login-email').value,
+          mot_de_passe: document.getElementById('login-password').value,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        afficherFeedback(data.message || 'Email ou mot de passe incorrect.', 'error');
+      } else {
+        afficherFeedback('Connexion réussie, redirection…', 'success');
+        setTimeout(() => apresConnexionReussie(data.token, data.user), 600);
+      }
+    } catch (error) {
+      afficherFeedback('Erreur de connexion au serveur. Réessaie.', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Se connecter';
+  });
+
+  formInscription.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    cacherFeedback();
+    const btn = document.getElementById('btn-register');
+    btn.disabled = true;
+    btn.textContent = 'Création du compte…';
+
+    try {
+      const response = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nom: document.getElementById('reg-nom').value,
+          telephone: document.getElementById('reg-telephone').value,
+          email: document.getElementById('reg-email').value,
+          mot_de_passe: document.getElementById('reg-password').value,
+          role: roleSelectionne,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        afficherFeedback(data.message || 'Impossible de créer le compte.', 'error');
+      } else {
+        afficherFeedback('Compte créé ! Connexion automatique…', 'success');
+        // Connexion automatique juste après inscription
+        const loginResponse = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('reg-email').value,
+            mot_de_passe: document.getElementById('reg-password').value,
+          }),
+        });
+        const loginData = await loginResponse.json();
+        setTimeout(() => apresConnexionReussie(loginData.token, loginData.user), 600);
+      }
+    } catch (error) {
+      afficherFeedback('Erreur de connexion au serveur. Réessaie.', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Créer mon compte';
+  });
+</script>
+
+</body>
+  </html>
+  
