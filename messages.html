@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages — Logis229</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #14213D;
+    --terracotta: #C1502E;
+    --terracotta-dark: #A43F22;
+    --cream: #FBF7F1;
+    --cream-dim: #F1EAE0;
+    --slate: #3A3F4B;
+    --slate-soft: #6B7080;
+    --green: #2E7D5B;
+    --border: #E4DDD1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--slate);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1, h3 {
+    font-family: 'Fraunces', serif;
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  header {
+    background: var(--navy);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .logo { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--cream); }
+  .logo span { color: var(--terracotta); }
+  .header-user { color: var(--cream); font-size: 13px; opacity: 0.8; }
+
+  .app-layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ---------- LISTE CONVERSATIONS ---------- */
+  .conversations-panel {
+    width: 100%;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    background: white;
+  }
+  .conversations-panel.hidden-mobile { display: none; }
+
+  .panel-title {
+    padding: 18px 20px 12px;
+    font-size: 18px;
+  }
+
+  .conv-item {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .conv-item:hover, .conv-item.active { background: var(--cream-dim); }
+
+  .conv-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--navy); color: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 15px; flex-shrink: 0;
+  }
+  .conv-info { flex: 1; min-width: 0; }
+  .conv-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .conv-preview {
+    font-size: 12px; color: var(--slate-soft);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ---------- ZONE DE CHAT ---------- */
+  .chat-panel {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    background: var(--cream-dim);
+  }
+  .chat-panel.active { display: flex; }
+
+  .chat-header {
+    background: white;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-retour {
+    background: none; border: none; font-size: 18px; cursor: pointer;
+    color: var(--slate-soft); padding: 4px;
+  }
+  .chat-header .conv-name { font-size: 15px; }
+
+  .messages-zone {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bulle {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .bulle.recu {
+    background: white;
+    border: 1px solid var(--border);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .bulle.envoye {
+    background: var(--terracotta);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .bulle-heure {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .chat-input-zone {
+    background: white;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+  }
+  .chat-input-zone input {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 11px 16px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+  }
+  .chat-input-zone input:focus { outline: 2px solid var(--terracotta); outline-offset: 1px; }
+  .btn-envoyer-msg {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .btn-envoyer-msg:hover { background: var(--terracotta-dark); }
+  .btn-envoyer-msg:disabled { opacity: 0.5; }
+
+  .etat-vide {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-soft);
+    font-size: 14px;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .not-logged { text-align: center; padding: 60px 20px; color: var(--slate-soft); margin: auto; }
+  .not-logged a { color: var(--terracotta); font-weight: 600; }
+
+  @media (min-width: 720px) {
+    .conversations-panel { width: 300px; flex-shrink: 0; }
+    .conversations-panel.hidden-mobile { display: block; }
+    .chat-panel { display: flex; }
+    .btn-retour { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Logis<span>229</span></a>
+  <span class="header-user" id="header-user"></span>
+</header>
+
+<div id="zone-non-connecte" class="not-logged" style="display:none;">
+  Connecte-toi pour voir tes messages.<br><br>
+  <a href="connexion.html?redirect=messages.html">Se connecter</a>
+</div>
+
+<div class="app-layout" id="app-layout" style="display:none;">
+  <div class="conversations-panel" id="conversations-panel">
+    <h1 class="panel-title">Messages</h1>
+    <div id="liste-conversations"></div>
+  </div>
+
+  <div class="chat-panel" id="chat-panel">
+    <div class="etat-vide" id="etat-vide-chat">Sélectionne une conversation pour voir les messages.</div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = 'https://immo-benin-backend.onrender.com/api';
+  const token = localStorage.getItem('logis229_token');
+  const userJson = localStorage.getItem('logis229_user');
+  const user = userJson ? JSON.parse(userJson) : null;
+  let conversationActiveId = null;
+
+  if (!token || !user) {
+    document.getElementById('zone-non-connecte').style.display = 'block';
+  } else {
+    document.getElementById('app-layout').style.display = 'flex';
+    document.getElementById('header-user').textContent = user.nom;
+    chargerConversations();
+  }
+
+  function initiales(id) {
+    return `#${id}`;
+  }
+
+  async function chargerConversations() {
+    const liste = document.getElementById('liste-conversations');
+    liste.innerHTML = '<p style="padding:16px 20px; color:var(--slate-soft); font-size:13px;">Chargement…</p>';
+
+    try {
+      const response = await fetch(`${API_BASE}/messages/mes-conversations`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const data = await response.json();
+
+      if (!data.conversations || data.conversations.length === 0) {
+        liste.innerHTML = '<p style="padding:16px 20px; color:var(--slate-soft); font-size:13px;">Aucune conversation pour le moment.</p>';
+        return;
+      }
+
+      liste.innerHTML = data.conversations.map(c => `
+        <div class="conv-item" data-id="${c.autre_utilisateur_id}" onclick="ouvrirConversation(${c.autre_utilisateur_id})">
+          <div class="conv-avatar">${initiales(c.autre_utilisateur_id)}</div>
+          <div class="conv-info">
+            <div class="conv-name">Utilisateur ${c.autre_utilisateur_id}</div>
+            <div class="conv-preview">Cliquez pour voir les messages</div>
+          </div>
+        </div>
+      `).join('');
+    } catch (error) {
+      liste.innerHTML = '<p style="padding:16px 20px; color:var(--red); font-size:13px;">Erreur de chargement.</p>';
+    }
+  }
+
+  async function ouvrirConversation(autreUserId) {
+    conversationActiveId = autreUserId;
+
+    document.querySelectorAll('.conv-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.id == autreUserId);
+    });
+
+    // Sur mobile, on cache la liste et on montre le chat
+    if (window.innerWidth < 720) {
+      document.getElementById('conversations-panel').classList.add('hidden-mobile');
+    }
+
+    const chatPanel = document.getElementById('chat-panel');
+    chatPanel.classList.add('active');
+    chatPanel.innerHTML = `
+      <div class="chat-header">
+        <button class="btn-retour" onclick="retourListe()">←</button>
+        <div class="conv-name">Utilisateur ${autreUserId}</div>
+      </div>
+      <div class="messages-zone" id="messages-zone">
+        <p style="text-align:center; color:var(--slate-soft); font-size:13px;">Chargement…</p>
+      </div>
+      <div class="chat-input-zone">
+        <input type="text" id="input-message" placeholder="Écris ton message…">
+        <button class="btn-envoyer-msg" id="btn-envoyer-msg" onclick="envoyerMessage()">➤</button>
+      </div>
+    `;
+
+    await chargerMessages(autreUserId);
+  }
+
+  function retourListe() {
+    document.getElementById('conversations-panel').classList.remove('hidden-mobile');
+    document.getElementById('chat-panel').classList.remove('active');
+  }
+
+  async function chargerMessages(autreUserId) {
+    const zone = document.getElementById('messages-zone');
+
+    try {
+      const response = await fetch(`${API_BASE}/messages/conversation/${autreUserId}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const data = await response.json();
+
+      if (!data.messages || data.messages.length === 0) {
+        zone.innerHTML = '<p style="text-align:center; color:var(--slate-soft); font-size:13px;">Aucun message encore. Lance la conversation !</p>';
+        return;
+      }
+
+      zone.innerHTML = data.messages.map(m => {
+        const estEnvoye = m.expediteur_id === user.id;
+        const heure = new Date(m.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        return `
+          <div class="bulle ${estEnvoye ? 'envoye' : 'recu'}">
+            ${m.contenu}
+            <span class="bulle-heure">${heure}</span>
+          </div>
+        `;
+      }).join('');
+
+      zone.scrollTop = zone.scrollHeight;
+    } catch (error) {
+      zone.innerHTML = '<p style="text-align:center; color:var(--red); font-size:13px;">Erreur de chargement des messages.</p>';
+    }
+  }
+
+  async function envoyerMessage() {
+    const input = document.getElementById('input-message');
+    const btn = document.getElementById('btn-envoyer-msg');
+    const contenu = input.value.trim();
+
+    if (!contenu || !conversationActiveId) return;
+
+    btn.disabled = true;
+
+    try {
+      const response = await fetch(`${API_BASE}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          destinataire_id: conversationActiveId,
+          contenu,
+        }),
+      });
+
+      if (response.ok) {
+        input.value = '';
+        await chargerMessages(conversationActiveId);
+      }
+    } catch (error) {
+      // silencieux, l'utilisateur peut réessayer
+    }
+
+    btn.disabled = false;
+  }
+
+  document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && document.activeElement.id === 'input-message') {
+      envoyerMessage();
+    }
+  });
+</script>
+
+</body>
+                                                                                                     </html>
+                                                                                                     
