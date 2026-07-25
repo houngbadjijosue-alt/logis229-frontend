@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logis229 — Trouvez votre prochain chez-vous au Bénin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #14213D;
+    --navy-light: #1F3157;
+    --terracotta: #C1502E;
+    --terracotta-dark: #A43F22;
+    --cream: #FBF7F1;
+    --cream-dim: #F1EAE0;
+    --slate: #3A3F4B;
+    --slate-soft: #6B7080;
+    --green: #2E7D5B;
+    --border: #E4DDD1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--slate);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, .display {
+    font-family: 'Fraunces', serif;
+    color: var(--navy);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  /* ---------- HEADER ---------- */
+  header {
+    background: var(--navy);
+    padding: 18px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cream);
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+  .logo span { color: var(--terracotta); }
+
+  nav.desktop-nav {
+    display: none;
+    gap: 32px;
+    align-items: center;
+  }
+  nav.desktop-nav a {
+    color: var(--cream);
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+  }
+  nav.desktop-nav a:hover { opacity: 1; }
+
+  .btn-publish {
+    background: var(--terracotta);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-publish:hover { background: var(--terracotta-dark); }
+  .btn-publish:focus-visible, a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--terracotta);
+    outline-offset: 2px;
+  }
+
+  .lang-toggle {
+    color: var(--cream);
+    font-size: 13px;
+    opacity: 0.7;
+    font-family: 'IBM Plex Mono', monospace;
+    display: none;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background: var(--navy);
+    position: relative;
+    padding: 56px 24px 0;
+    overflow: hidden;
+  }
+
+  .hero-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 18px;
+    display: inline-block;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    color: var(--cream);
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .hero p {
+    color: rgba(251,247,241,0.72);
+    font-size: 16px;
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+
+  /* Skyline signature graphic */
+  .skyline {
+    width: 100%;
+    height: 60px;
+    display: block;
+    margin-top: 40px;
+  }
+
+  /* ---------- SEARCH CARD ---------- */
+  .search-card {
+    background: var(--cream);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 20px 50px -12px rgba(20,33,61,0.35);
+    max-width: 900px;
+    margin: -28px auto 0;
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .search-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+  }
+  .search-field label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--slate-soft);
+  }
+  .search-field input, .search-field select {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 12px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--navy);
+    background: white;
+  }
+  .search-field input:focus, .search-field select:focus {
+    outline: 2px solid var(--terracotta);
+    outline-offset: 1px;
+  }
+
+  .search-btn {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.2s;
+  }
+  .search-btn:hover { background: var(--terracotta-dark); }
+
+  /* ---------- TYPE PILLS ---------- */
+  .type-pills {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 24px auto 64px;
+    padding: 0 24px;
+  }
+  .pill {
+    background: rgba(251,247,241,0.08);
+    border: 1px solid rgba(251,247,241,0.18);
+    color: var(--cream);
+    padding: 9px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pill:hover, .pill.active {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+  }
+
+  /* ---------- LISTINGS SECTION ---------- */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 64px 24px;
+  }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .section-head h2 { font-size: 26px; }
+  .section-head p { color: var(--slate-soft); font-size: 14px; }
+
+  .listings-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px -10px rgba(20,33,61,0.18);
+  }
+
+  .card-image {
+    height: 190px;
+    background: linear-gradient(135deg, var(--cream-dim), var(--border));
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-soft);
+    font-size: 13px;
+  }
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-type-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--navy);
+    color: var(--cream);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 100px;
+    text-transform: capitalize;
+  }
+
+  .card-body { padding: 16px; }
+
+  .card-body h3 {
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .card-location {
+    font-size: 13px;
+    color: var(--slate-soft);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-price {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    color: var(--navy);
+    font-size: 15px;
+  }
+  .card-price span {
+    font-size: 11px;
+    color: var(--slate-soft);
+    font-weight: 500;
+  }
+
+  .verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(46,125,91,0.1);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 100px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--slate-soft);
+    font-size: 14px;
+    grid-column: 1 / -1;
+  }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps-section {
+    background: var(--cream-dim);
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 28px;
+  }
+  .step {
+    display: flex;
+    gap: 16px;
+  }
+  .step-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--terracotta);
+    border: 1.5px solid var(--terracotta);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step h3 { font-size: 16px; margin-bottom: 4px; }
+  .step p { font-size: 14px; color: var(--slate-soft); }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    background: var(--navy);
+    color: rgba(251,247,241,0.6);
+    padding: 40px 24px 24px;
+    font-size: 13px;
+  }
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .footer-logo {
+    font-family: 'Fraunces', serif;
+    color: var(--cream);
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .footer-logo span { color: var(--terracotta); }
+  footer .footer-bottom {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(251,247,241,0.12);
+  }
+
+  /* ---------- RESPONSIVE (desktop) ---------- */
+  @media (min-width: 768px) {
+    nav.desktop-nav { display: flex; }
+    .lang-toggle { display: block; }
+    .hero h1 { font-size: 48px; }
+    .hero p { font-size: 18px; }
+    .search-card {
+      grid-template-columns: 1.3fr 1fr 1fr auto;
+      align-items: end;
+      padding: 24px;
+    }
+    .listings-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .steps-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Logis<span>229</span></div>
+  <nav class="desktop-nav">
+    <a href="#">Acheter</a>
+    <a href="#">Louer</a>
+    <a href="#">Terrains</a>
+    <a href="#">Boutiques</a>
+  </nav>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <span class="lang-toggle">FR / EN</span>
+    <button class="btn-publish">Publier une annonce</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Cotonou · Porto-Novo · Abomey-Calavi · et plus</span>
+    <h1>Trouvez votre <em>prochain chez-vous</em>,<br>partout au Bénin</h1>
+    <p>Maisons, appartements, terrains et boutiques — publiés directement par les propriétaires, sans intermédiaire.</p>
+  </div>
+
+  <!-- Signature skyline element -->
+  <svg class="skyline" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+    <polyline points="0,60 0,40 40,40 40,25 80,25 80,45 130,45 130,15 145,15 145,45 200,45 200,30 260,30 260,50 310,50 310,20 330,20 330,50 400,50 400,35 460,35 460,10 480,10 480,35 540,35 540,48 600,48 600,25 650,25 650,45 720,45 720,20 745,20 745,45 810,45 810,35 870,35 870,50 930,50 930,15 960,15 960,50 1030,50 1030,30 1090,30 1090,45 1150,45 1150,20 1200,20 1200,60"
+      fill="none" stroke="#C1502E" stroke-width="2" opacity="0.55"/>
+  </svg>
+
+  <div class="search-card">
+    <div class="search-field">
+      <label for="search-ville">Ville ou quartier</label>
+      <input type="text" id="search-ville" placeholder="Ex : Cotonou, Fidjrossè">
+    </div>
+    <div class="search-field">
+      <label for="search-type">Type de bien</label>
+      <select id="search-type">
+        <option value="">Tous les types</option>
+        <option value="maison">Maison</option>
+        <option value="appartement">Appartement</option>
+        <option value="terrain">Terrain</option>
+        <option value="boutique">Boutique</option>
+      </select>
+    </div>
+    <div class="search-field">
+      <label for="search-prix">Prix max (FCFA)</label>
+      <input type="number" id="search-prix" placeholder="Ex : 150000">
+    </div>
+    <button class="search-btn" onclick="rechercherAnnonces()">Rechercher</button>
+  </div>
+
+  <div class="type-pills">
+    <button class="pill active" data-type="">Tout voir</button>
+    <button class="pill" data-type="maison">Maisons</button>
+    <button class="pill" data-type="appartement">Appartements</button>
+    <button class="pill" data-type="terrain">Terrains</button>
+    <button class="pill" data-type="boutique">Boutiques</button>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Annonces récentes</h2>
+    <p id="results-count">Chargement en cours…</p>
+  </div>
+  <div class="listings-grid" id="listings-grid">
+    <div class="empty-state">Chargement des annonces…</div>
+  </div>
+</section>
+
+<section class="section steps-section">
+  <div class="section-head" style="display:block;">
+    <h2>Comment ça marche</h2>
+  </div>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <h3>Cherchez par zone</h3>
+        <p>Indiquez la ville ou le quartier qui vous intéresse, et filtrez par type de bien et budget.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <h3>Contactez le propriétaire</h3>
+        <p>Échangez directement via la messagerie intégrée, sans intermédiaire ni frais cachés.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <h3>Visitez et décidez</h3>
+        <p>Organisez une visite en toute confiance grâce aux profils propriétaires vérifiés.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Logis<span>229</span></div>
+    <p>La plateforme qui met en relation propriétaires et locataires, partout au Bénin.</p>
+    <div class="footer-bottom">
+      © 2026 Logis229. Tous droits réservés.
+    </div>
+  </div>
+</footer>
+
+<script>
+  const API_BASE = 'https://immo-benin-backend.onrender.com/api';
+
+  function formaterPrix(prix) {
+    return new Intl.NumberFormat('fr-FR').format(prix);
+  }
+
+  function iconeType(type) {
+    const labels = { maison: 'Maison', appartement: 'Appartement', terrain: 'Terrain', boutique: 'Boutique' };
+    return labels[type] || type;
+  }
+
+  async function chargerAnnonces(params = {}) {
+    const grid = document.getElementById('listings-grid');
+    const count = document.getElementById('results-count');
+    grid.innerHTML = '<div class="empty-state">Chargement des annonces…</div>';
+
+    try {
+      const query = new URLSearchParams(params).toString();
+      const response = await fetch(`${API_BASE}/annonces${query ? '?' + query : ''}`);
+      const data = await response.json();
+
+      if (!data.annonces || data.annonces.length === 0) {
+        grid.innerHTML = '<div class="empty-state">Aucune annonce ne correspond à cette recherche pour le moment. Revenez bientôt !</div>';
+        count.textContent = '0 annonce';
+        return;
+      }
+
+      count.textContent = `${data.count} annonce${data.count > 1 ? 's' : ''}`;
+
+      grid.innerHTML = data.annonces.map(a => `
+        <a href="annonce.html?id=${a.id}" class="card" data-id="${a.id}">
+          <div class="card-image">
+            <span class="card-type-tag">${iconeType(a.type)}</span>
+            Photo à venir
+          </div>
+          <div class="card-body">
+            <h3>${a.titre}</h3>
+            <div class="card-location">${a.quartier ? a.quartier + ', ' : ''}${a.ville}</div>
+            <div class="card-footer">
+              <div class="card-price">${formaterPrix(a.prix)} <span>FCFA${a.type === 'terrain' || a.type === 'boutique' ? '' : '/mois'}</span></div>
+              <span class="verified-badge">✓ Vérifié</span>
+            </div>
+          </div>
+        </a>
+      `).join('');
+    } catch (error) {
+      grid.innerHTML = '<div class="empty-state">Impossible de charger les annonces pour le moment. Réessayez dans un instant.</div>';
+      count.textContent = '';
+    }
+  }
+
+  function rechercherAnnonces() {
+    const ville = document.getElementById('search-ville').value;
+    const type = document.getElementById('search-type').value;
+    const prix_max = document.getElementById('search-prix').value;
+
+    const params = {};
+    if (ville) params.ville = ville;
+    if (type) params.type = type;
+    if (prix_max) params.prix_max = prix_max;
+
+    chargerAnnonces(params);
+  }
+
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const type = pill.dataset.type;
+      document.getElementById('search-type').value = type;
+      chargerAnnonces(type ? { type } : {});
+    });
+  });
+
+  chargerAnnonces();
+</script>
+
+</body>
+  </html>
+  
