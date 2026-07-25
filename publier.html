@@ -275,6 +275,13 @@
             <input type="number" id="f-prix" min="0" required placeholder="Ex : 120000">
           </div>
 
+          <div class="field">
+            <label>Localisation exacte (optionnel)</label>
+            <span class="hint">Utile pour afficher le bien sur une carte. Fais-le si tu es sur place.</span>
+            <button type="button" class="btn btn-secondary" id="btn-position" style="width:100%;">📍 Utiliser ma position actuelle</button>
+            <span class="hint" id="position-statut"></span>
+          </div>
+
           <div class="form-nav">
             <button type="button" class="btn btn-secondary" onclick="allerEtape(1)">Retour</button>
             <button type="button" class="btn btn-primary" onclick="allerEtape(3)">Continuer</button>
@@ -344,6 +351,30 @@
     prixHint.textContent = estLogement ? 'Par mois, si c\'est une location' : 'Prix de vente ou de location total';
   }
 
+  let latitudeCapturee = null;
+  let longitudeCapturee = null;
+
+  document.getElementById('btn-position').addEventListener('click', () => {
+    const statut = document.getElementById('position-statut');
+    statut.textContent = 'Recherche de ta position…';
+
+    if (!navigator.geolocation) {
+      statut.textContent = "La géolocalisation n'est pas disponible sur cet appareil.";
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        latitudeCapturee = position.coords.latitude;
+        longitudeCapturee = position.coords.longitude;
+        statut.textContent = '✓ Position enregistrée avec succès.';
+      },
+      () => {
+        statut.textContent = "Impossible d'obtenir ta position. Vérifie que tu as autorisé l'accès à la localisation.";
+      }
+    );
+  });
+
   function allerEtape(numero) {
     if (numero === 3) construireRecap();
 
@@ -387,6 +418,8 @@
       chambres: document.getElementById('f-chambres').value ? parseInt(document.getElementById('f-chambres').value, 10) : null,
       meuble: document.getElementById('f-meuble').checked,
       superficie: document.getElementById('f-superficie').value ? parseInt(document.getElementById('f-superficie').value, 10) : null,
+      latitude: latitudeCapturee,
+      longitude: longitudeCapturee,
     };
 
     try {
@@ -424,4 +457,4 @@
 
 </body>
   </html>
-  
+              
