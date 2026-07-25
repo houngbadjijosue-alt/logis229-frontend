@@ -455,7 +455,7 @@
   </nav>
   <div style="display:flex; align-items:center; gap:16px;">
     <span class="lang-toggle">FR / EN</span>
-    <button class="btn-publish">Publier une annonce</button>
+    <button class="btn-publish" onclick="allerPublier()">Publier une annonce</button>
   </div>
 </header>
 
@@ -627,9 +627,18 @@
     });
   });
 
+  function allerPublier() {
+    const token = localStorage.getItem('logis229_token');
+    if (token) {
+      window.location.href = 'publier.html';
+    } else {
+      window.location.href = 'connexion.html?redirect=publier.html';
+    }
+  }
+
   chargerAnnonces();
 </script>
 
 </body>
-  </html>
-  
+      </html>
+    
