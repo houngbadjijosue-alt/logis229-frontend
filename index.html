@@ -640,14 +640,22 @@
     const token = localStorage.getItem('logis229_token');
     const userJson = localStorage.getItem('logis229_user');
     const user = userJson ? JSON.parse(userJson) : null;
+    const zone = document.getElementById('header-right');
 
-    if (token && user && user.role === 'proprietaire') {
-      const zone = document.getElementById('header-right');
-      const lien = document.createElement('a');
-      lien.href = 'mes-annonces.html';
-      lien.textContent = 'Mes annonces';
-      lien.style.cssText = 'color:#FBF7F1; font-size:14px; font-weight:500; opacity:0.85;';
-      zone.insertBefore(lien, zone.firstChild);
+    if (token && user) {
+      const lienMessages = document.createElement('a');
+      lienMessages.href = 'messages.html';
+      lienMessages.textContent = 'Messages';
+      lienMessages.style.cssText = 'color:#FBF7F1; font-size:14px; font-weight:500; opacity:0.85;';
+      zone.insertBefore(lienMessages, zone.firstChild);
+
+      if (user.role === 'proprietaire') {
+        const lienAnnonces = document.createElement('a');
+        lienAnnonces.href = 'mes-annonces.html';
+        lienAnnonces.textContent = 'Mes annonces';
+        lienAnnonces.style.cssText = 'color:#FBF7F1; font-size:14px; font-weight:500; opacity:0.85;';
+        zone.insertBefore(lienAnnonces, zone.firstChild);
+      }
     }
   })();
 
