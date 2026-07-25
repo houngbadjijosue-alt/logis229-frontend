@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Annonce — Logis229</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #14213D;
+    --terracotta: #C1502E;
+    --terracotta-dark: #A43F22;
+    --cream: #FBF7F1;
+    --cream-dim: #F1EAE0;
+    --slate: #3A3F4B;
+    --slate-soft: #6B7080;
+    --green: #2E7D5B;
+    --border: #E4DDD1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--slate);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Fraunces', serif;
+    color: var(--navy);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  a { text-decoration: none; color: inherit; }
+
+  header {
+    background: var(--navy);
+    padding: 18px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .logo span { color: var(--terracotta); }
+
+  .btn-publish {
+    background: var(--terracotta);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-publish:hover { background: var(--terracotta-dark); }
+  button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--terracotta);
+    outline-offset: 2px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--slate-soft);
+    padding: 20px 24px 0;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .back-link:hover { color: var(--navy); }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 16px 24px 80px;
+  }
+
+  #contenu-annonce { display: none; }
+  #etat-chargement, #etat-erreur {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--slate-soft);
+  }
+  #etat-erreur { display: none; }
+
+  .galerie {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .galerie-principale {
+    height: 260px;
+    background: linear-gradient(135deg, var(--cream-dim), var(--border));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-soft);
+    font-size: 14px;
+    position: relative;
+  }
+  .galerie-principale img { width: 100%; height: 100%; object-fit: cover; }
+  .galerie-vignettes { display: flex; gap: 8px; overflow-x: auto; }
+  .galerie-vignettes img {
+    width: 88px; height: 66px; object-fit: cover; border-radius: 8px;
+    flex-shrink: 0; cursor: pointer; opacity: 0.7; border: 2px solid transparent;
+  }
+  .galerie-vignettes img.active { opacity: 1; border-color: var(--terracotta); }
+
+  .type-tag {
+    position: absolute; top: 14px; left: 14px;
+    background: var(--navy); color: var(--cream);
+    font-size: 12px; font-weight: 600; padding: 6px 12px;
+    border-radius: 100px; text-transform: capitalize; z-index: 2;
+  }
+
+  .layout { display: grid; grid-template-columns: 1fr; gap: 32px; }
+  .titre-bloc h1 { font-size: 26px; margin-bottom: 8px; line-height: 1.2; }
+  .localisation { color: var(--slate-soft); font-size: 15px; margin-bottom: 16px; }
+
+  .badges-row { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .verified-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(46,125,91,0.1); color: var(--green);
+    font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 100px;
+  }
+
+  .specs-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; margin-bottom: 28px;
+  }
+  .spec-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--slate-soft); font-weight: 600; margin-bottom: 4px;
+  }
+  .spec-value { font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 600; color: var(--navy); }
+
+  .price-block { background: var(--navy); color: var(--cream); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+  .price-block .price { font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 600; }
+  .price-block .unit { font-size: 13px; opacity: 0.7; }
+
+  .contact-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .contact-card h3 { font-size: 17px; margin-bottom: 14px; }
+  .contact-card textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 11px;
+    font-family: 'Inter', sans-serif; font-size: 14px; resize: vertical; min-height: 90px; margin-bottom: 12px;
+  }
+  .contact-card textarea:focus { outline: 2px solid var(--terracotta); outline-offset: 1px; }
+  .btn-contact {
+    width: 100%; background: var(--terracotta); color: white; border: none;
+    padding: 13px; border-radius: 8px; font-weight: 600; font-size: 15px;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+  .btn-contact:hover { background: var(--terracotta-dark); }
+  .btn-contact:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .login-prompt {
+    background: var(--cream-dim); border-radius: 8px; padding: 14px;
+    font-size: 13px; color: var(--slate-soft); text-align: center;
+  }
+  .login-prompt a { color: var(--terracotta); font-weight: 600; }
+
+  .message-feedback { font-size: 13px; margin-top: 10px; text-align: center; }
+  .message-feedback.success { color: var(--green); }
+  .message-feedback.error { color: var(--terracotta); }
+
+  @media (min-width: 860px) {
+    .layout { grid-template-columns: 1.6fr 1fr; align-items: start; }
+    .galerie-principale { height: 420px; }
+    .contact-card { position: sticky; top: 90px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Logis<span>229</span></a>
+  <button class="btn-publish" onclick="window.location.href='publier.html'">Publier une annonce</button>
+</header>
+
+<a href="index.html" class="back-link">← Retour aux annonces</a>
+
+<div class="container">
+  <div id="etat-chargement">Chargement de l'annonce…</div>
+  <div id="etat-erreur">Cette annonce est introuvable ou n'est plus disponible. <a href="index.html" style="color:var(--terracotta); font-weight:600;">Retour à l'accueil</a></div>
+
+  <div id="contenu-annonce">
+    <div class="galerie">
+      <div class="galerie-principale" id="galerie-principale">
+        <span class="type-tag" id="type-tag"></span>
+        <span id="galerie-placeholder">Aucune photo pour le moment</span>
+      </div>
+      <div class="galerie-vignettes" id="galerie-vignettes"></div>
+    </div>
+
+    <div class="layout">
+      <div>
+        <div class="titre-bloc">
+          <h1 id="titre"></h1>
+          <div class="localisation" id="localisation"></div>
+        </div>
+
+        <div class="badges-row">
+          <span class="verified-badge">✓ Propriétaire vérifié</span>
+        </div>
+
+        <div class="specs-grid" id="specs-grid"></div>
+
+        <div>
+          <div class="spec-label" style="margin-bottom:8px;">Description</div>
+          <p id="description" style="font-size:14px; color:var(--slate);">Contactez le propriétaire pour obtenir plus de détails sur ce bien, organiser une visite ou négocier les conditions.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="price-block">
+          <div class="price" id="prix"></div>
+          <div class="unit" id="prix-unit"></div>
+        </div>
+
+        <div class="contact-card">
+          <h3>Contacter le propriétaire</h3>
+          <div id="zone-contact"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = 'https://immo-benin-backend.onrender.com/api';
+  const params = new URLSearchParams(window.location.search);
+  const annonceId = params.get('id');
+
+  function formaterPrix(prix) {
+    return new Intl.NumberFormat('fr-FR').format(prix);
+  }
+
+  function labelType(type) {
+    const labels = { maison: 'Maison', appartement: 'Appartement', terrain: 'Terrain', boutique: 'Boutique' };
+    return labels[type] || type;
+  }
+
+  function construireSpecs(a) {
+    const specs = [];
+    specs.push({ label: 'Type', value: labelType(a.type) });
+    if (a.chambres) specs.push({ label: 'Chambres', value: a.chambres });
+    if (a.superficie) specs.push({ label: 'Superficie', value: `${a.superficie} m²` });
+    if (a.type === 'maison' || a.type === 'appartement') {
+      specs.push({ label: 'Meublé', value: a.meuble ? 'Oui' : 'Non' });
+    }
+    specs.push({ label: 'Statut', value: a.statut === 'disponible' ? 'Disponible' : a.statut });
+    return specs;
+  }
+
+  function afficherGalerie(photos) {
+    const principale = document.getElementById('galerie-principale');
+    const vignettes = document.getElementById('galerie-vignettes');
+    const placeholder = document.getElementById('galerie-placeholder');
+
+    if (!photos || photos.length === 0) return;
+
+    placeholder.style.display = 'none';
+    const img = document.createElement('img');
+    img.src = photos[0].url;
+    img.alt = "Photo de l'annonce";
+    principale.appendChild(img);
+
+    if (photos.length > 1) {
+      vignettes.innerHTML = photos.map((p, i) => `
+        <img src="${p.url}" class="${i === 0 ? 'active' : ''}" data-src="${p.url}" alt="Miniature ${i + 1}">
+      `).join('');
+
+      vignettes.querySelectorAll('img').forEach(thumb => {
+        thumb.addEventListener('click', () => {
+          img.src = thumb.dataset.src;
+          vignettes.querySelectorAll('img').forEach(t => t.classList.remove('active'));
+          thumb.classList.add('active');
+        });
+      });
+    }
+  }
+
+  function afficherZoneContact(annonce) {
+    const zone = document.getElementById('zone-contact');
+    const token = localStorage.getItem('logis229_token');
+
+    if (!token) {
+      zone.innerHTML = `
+        <div class="login-prompt">
+          <a href="connexion.html">Connectez-vous</a> pour envoyer un message au propriétaire.
+        </div>
+      `;
+      return;
+    }
+
+    zone.innerHTML = `
+      <textarea id="message-texte" placeholder="Bonjour, ce bien est-il toujours disponible ?"></textarea>
+      <button class="btn-contact" id="btn-envoyer">Envoyer le message</button>
+      <div class="message-feedback" id="message-feedback"></div>
+    `;
+
+    document.getElementById('btn-envoyer').addEventListener('click', async () => {
+      const contenu = document.getElementById('message-texte').value.trim();
+      const feedback = document.getElementById('message-feedback');
+      const btn = document.getElementById('btn-envoyer');
+
+      if (!contenu) {
+        feedback.textContent = "Écris un message avant d'envoyer.";
+        feedback.className = 'message-feedback error';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Envoi en cours…';
+
+      try {
+        const response = await fetch(`${API_BASE}/messages`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            destinataire_id: annonce.proprietaire_id,
+            annonce_id: annonce.id,
+            contenu,
+          }),
+        });
+
+        if (response.ok) {
+          feedback.textContent = 'Message envoyé avec succès.';
+          feedback.className = 'message-feedback success';
+          document.getElementById('message-texte').value = '';
+        } else {
+          feedback.textContent = "Erreur lors de l'envoi. Réessaie.";
+          feedback.className = 'message-feedback error';
+        }
+      } catch (error) {
+        feedback.textContent = 'Erreur de connexion. Réessaie.';
+        feedback.className = 'message-feedback error';
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Envoyer le message';
+    });
+  }
+
+  async function chargerAnnonce() {
+    if (!annonceId) {
+      document.getElementById('etat-chargement').style.display = 'none';
+      document.getElementById('etat-erreur').style.display = 'block';
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/annonces/${annonceId}`);
+      if (!response.ok) throw new Error('Introuvable');
+      const data = await response.json();
+      const a = data.annonce;
+
+      document.title = `${a.titre} — Logis229`;
+      document.getElementById('type-tag').textContent = labelType(a.type);
+      document.getElementById('titre').textContent = a.titre;
+      document.getElementById('localisation').textContent = `${a.quartier ? a.quartier + ', ' : ''}${a.ville}`;
+      document.getElementById('prix').textContent = `${formaterPrix(a.prix)} FCFA`;
+      document.getElementById('prix-unit').textContent = (a.type === 'terrain' || a.type === 'boutique') ? 'Prix' : 'par mois';
+
+      const specsGrid = document.getElementById('specs-grid');
+      specsGrid.innerHTML = construireSpecs(a).map(s => `
+        <div class="spec-item">
+          <div class="spec-label">${s.label}</div>
+          <div class="spec-value">${s.value}</div>
+        </div>
+      `).join('');
+
+      afficherGalerie(data.photos);
+      afficherZoneContact(a);
+
+      document.getElementById('etat-chargement').style.display = 'none';
+      document.getElementById('contenu-annonce').style.display = 'block';
+    } catch (error) {
+      document.getElementById('etat-chargement').style.display = 'none';
+      document.getElementById('etat-erreur').style.display = 'block';
+    }
+  }
+
+  chargerAnnonce();
+</script>
+
+</body>
+  </html>
+  
