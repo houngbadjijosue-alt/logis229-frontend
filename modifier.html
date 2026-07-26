@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modifier l'annonce — Logis229</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #14213D; --terracotta: #C1502E; --terracotta-dark: #A43F22;
+    --cream: #FBF7F1; --cream-dim: #F1EAE0; --slate: #3A3F4B;
+    --slate-soft: #6B7080; --green: #2E7D5B; --border: #E4DDD1; --red: #B3261E;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif; background: var(--cream); color: var(--slate);
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  h1 { font-family: 'Fraunces', serif; color: var(--navy); font-weight: 500; }
+  a { text-decoration: none; color: inherit; }
+
+  header {
+    background: var(--navy); padding: 18px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--cream); }
+  .logo span { color: var(--terracotta); }
+
+  .container { max-width: 560px; margin: 0 auto; padding: 32px 20px 80px; }
+  .page-head { margin-bottom: 24px; }
+  .page-head h1 { font-size: 24px; margin-bottom: 6px; }
+  .page-head p { color: var(--slate-soft); font-size: 14px; }
+
+  .form-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 26px; display: flex; flex-direction: column; gap: 16px; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--slate); }
+  .field input, .field select { border: 1px solid var(--border); border-radius: 8px; padding: 11px 12px; font-size: 15px; font-family: 'Inter', sans-serif; color: var(--navy); width: 100%; }
+  .field input:focus, .field select:focus { outline: 2px solid var(--terracotta); outline-offset: 1px; }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .checkbox-field { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .checkbox-field input { width: auto; }
+
+  .btn { padding: 13px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; border: none; font-family: 'Inter', sans-serif; width: 100%; }
+  .btn-primary { background: var(--terracotta); color: white; }
+  .btn-primary:hover { background: var(--terracotta-dark); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 2px; }
+
+  .feedback { font-size: 13px; text-align: center; padding: 10px; border-radius: 8px; display: none; }
+  .feedback.error { background: rgba(179,38,30,0.08); color: var(--red); display: block; }
+  .feedback.success { background: rgba(46,125,91,0.08); color: var(--green); display: block; }
+
+  .not-logged, .not-owner { text-align: center; padding: 60px 20px; color: var(--slate-soft); }
+  .not-logged a, .not-owner a { color: var(--terracotta); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Logis<span>229</span></a>
+</header>
+
+<div class="container">
+  <div id="zone-non-connecte" class="not-logged" style="display:none;">
+    Tu dois être connecté pour modifier une annonce.<br><br>
+    <a href="connexion.html">Se connecter</a>
+  </div>
+
+  <div id="zone-non-proprietaire" class="not-owner" style="display:none;">
+    Cette annonce ne t'appartient pas.<br><br>
+    <a href="mes-annonces.html">Retour à mes annonces</a>
+  </div>
+
+  <div id="zone-formulaire" style="display:none;">
+    <div class="page-head">
+      <h1>Modifier l'annonce</h1>
+      <p>Corrige les informations, les changements seront visibles immédiatement.</p>
+    </div>
+
+    <div class="form-card">
+      <div class="feedback" id="feedback"></div>
+
+      <div class="field">
+        <label for="f-titre">Titre de l'annonce</label>
+        <input type="text" id="f-titre" required>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label for="f-ville">Ville</label>
+          <input type="text" id="f-ville" required>
+        </div>
+        <div class="field">
+          <label for="f-quartier">Quartier</label>
+          <input type="text" id="f-quartier">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-type">Type de bien</label>
+        <select id="f-type">
+          <option value="maison">Maison</option>
+          <option value="appartement">Appartement</option>
+          <option value="terrain">Terrain</option>
+          <option value="boutique">Boutique</option>
+        </select>
+      </div>
+
+      <div class="row-2">
+        <div class="field" id="champ-chambres">
+          <label for="f-chambres">Chambres</label>
+          <input type="number" id="f-chambres" min="0">
+        </div>
+        <div class="field">
+          <label for="f-superficie">Superficie (m²)</label>
+          <input type="number" id="f-superficie" min="0">
+        </div>
+      </div>
+
+      <div class="field" id="champ-meuble">
+        <div class="checkbox-field">
+          <input type="checkbox" id="f-meuble">
+          <label for="f-meuble" style="font-weight:400;">Ce logement est meublé</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-prix">Prix (FCFA)</label>
+        <input type="number" id="f-prix" min="0" required>
+      </div>
+
+      <div class="field">
+        <label for="f-statut">Statut</label>
+        <select id="f-statut">
+          <option value="disponible">Disponible</option>
+          <option value="loue">Loué</option>
+          <option value="vendu">Vendu</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" id="btn-enregistrer" onclick="enregistrerModifications()">Enregistrer les modifications</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = 'https://immo-benin-backend.onrender.com/api';
+  const params = new URLSearchParams(window.location.search);
+  const annonceId = params.get('id');
+  const token = localStorage.getItem('logis229_token');
+  const userJson = localStorage.getItem('logis229_user');
+  const user = userJson ? JSON.parse(userJson) : null;
+
+  if (!token || !user) {
+    document.getElementById('zone-non-connecte').style.display = 'block';
+  } else {
+    chargerAnnonce();
+  }
+
+  function ajusterChampsSelonType() {
+    const type = document.getElementById('f-type').value;
+    const estLogement = type === 'maison' || type === 'appartement';
+    document.getElementById('champ-chambres').style.display = estLogement ? 'flex' : 'none';
+    document.getElementById('champ-meuble').style.display = estLogement ? 'block' : 'none';
+  }
+
+  document.getElementById('f-type').addEventListener('change', ajusterChampsSelonType);
+
+  async function chargerAnnonce() {
+    if (!annonceId) {
+      document.getElementById('zone-non-proprietaire').style.display = 'block';
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/annonces/${annonceId}`);
+      const data = await response.json();
+      const a = data.annonce;
+
+      if (a.proprietaire_id !== user.id) {
+        document.getElementById('zone-non-proprietaire').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('f-titre').value = a.titre;
+      document.getElementById('f-ville').value = a.ville;
+      document.getElementById('f-quartier').value = a.quartier || '';
+      document.getElementById('f-type').value = a.type;
+      document.getElementById('f-chambres').value = a.chambres || '';
+      document.getElementById('f-superficie').value = a.superficie || '';
+      document.getElementById('f-meuble').checked = a.meuble;
+      document.getElementById('f-prix').value = a.prix;
+      document.getElementById('f-statut').value = a.statut;
+
+      ajusterChampsSelonType();
+      document.getElementById('zone-formulaire').style.display = 'block';
+    } catch (error) {
+      document.getElementById('zone-non-proprietaire').style.display = 'block';
+    }
+  }
+
+  async function enregistrerModifications() {
+    const feedback = document.getElementById('feedback');
+    const btn = document.getElementById('btn-enregistrer');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement…';
+
+    const body = {
+      titre: document.getElementById('f-titre').value,
+      ville: document.getElementById('f-ville').value,
+      quartier: document.getElementById('f-quartier').value,
+      type: document.getElementById('f-type').value,
+      prix: parseInt(document.getElementById('f-prix').value, 10),
+      chambres: document.getElementById('f-chambres').value ? parseInt(document.getElementById('f-chambres').value, 10) : null,
+      meuble: document.getElementById('f-meuble').checked,
+      superficie: document.getElementById('f-superficie').value ? parseInt(document.getElementById('f-superficie').value, 10) : null,
+      statut: document.getElementById('f-statut').value,
+    };
+
+    try {
+      const response = await fetch(`${API_BASE}/annonces/${annonceId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        feedback.textContent = 'Modifications enregistrées avec succès.';
+        feedback.className = 'feedback success';
+        setTimeout(() => window.location.href = 'mes-annonces.html', 1000);
+      } else {
+        feedback.textContent = data.message || 'Erreur lors de la mise à jour.';
+        feedback.className = 'feedback error';
+        btn.disabled = false;
+        btn.textContent = 'Enregistrer les modifications';
+      }
+    } catch (error) {
+      feedback.textContent = 'Erreur de connexion au serveur.';
+      feedback.className = 'feedback error';
+      btn.disabled = false;
+      btn.textContent = 'Enregistrer les modifications';
+    }
+  }
+</script>
+
+</body>
+        </html>
+        
