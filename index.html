@@ -502,7 +502,14 @@
 <section class="section">
   <div class="section-head">
     <h2>Annonces récentes</h2>
-    <p id="results-count">Chargement en cours…</p>
+    <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+      <p id="results-count">Chargement en cours…</p>
+      <select id="tri-select" style="border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px; font-family:'Inter',sans-serif; color:var(--navy); background:white;">
+        <option value="recent">Plus récent d'abord</option>
+        <option value="prix_asc">Prix croissant</option>
+        <option value="prix_desc">Prix décroissant</option>
+      </select>
+    </div>
   </div>
   <div class="listings-grid" id="listings-grid">
     <div class="empty-state">Chargement des annonces…</div>
@@ -550,6 +557,7 @@
 
 <script>
   const API_BASE = 'https://immo-benin-backend.onrender.com/api';
+  let annoncesActuelles = [];
 
   function formaterPrix(prix) {
     return new Intl.NumberFormat('fr-FR').format(prix);
@@ -559,6 +567,47 @@
     const labels = { maison: 'Maison', appartement: 'Appartement', terrain: 'Terrain', boutique: 'Boutique' };
     return labels[type] || type;
   }
+
+  function trierAnnonces(annonces) {
+    const tri = document.getElementById('tri-select').value;
+    const copie = [...annonces];
+
+    if (tri === 'prix_asc') copie.sort((a, b) => a.prix - b.prix);
+    else if (tri === 'prix_desc') copie.sort((a, b) => b.prix - a.prix);
+    else copie.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    return copie;
+  }
+
+  function afficherAnnonces(annonces) {
+    const grid = document.getElementById('listings-grid');
+
+    if (annonces.length === 0) {
+      grid.innerHTML = '<div class="empty-state">Aucune annonce ne correspond à cette recherche pour le moment. Revenez bientôt !</div>';
+      return;
+    }
+
+    grid.innerHTML = trierAnnonces(annonces).map(a => `
+      <a href="annonce.html?id=${a.id}" class="card" data-id="${a.id}">
+        <div class="card-image">
+          <span class="card-type-tag">${iconeType(a.type)}</span>
+          Photo à venir
+        </div>
+        <div class="card-body">
+          <h3>${a.titre}</h3>
+          <div class="card-location">${a.quartier ? a.quartier + ', ' : ''}${a.ville}</div>
+          <div class="card-footer">
+            <div class="card-price">${formaterPrix(a.prix)} <span>FCFA${a.type === 'terrain' || a.type === 'boutique' ? '' : '/mois'}</span></div>
+            <span class="verified-badge">✓ Vérifié</span>
+          </div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  document.getElementById('tri-select').addEventListener('change', () => {
+    afficherAnnonces(annoncesActuelles);
+  });
 
   async function chargerAnnonces(params = {}) {
     const grid = document.getElementById('listings-grid');
@@ -570,30 +619,16 @@
       const response = await fetch(`${API_BASE}/annonces${query ? '?' + query : ''}`);
       const data = await response.json();
 
-      if (!data.annonces || data.annonces.length === 0) {
-        grid.innerHTML = '<div class="empty-state">Aucune annonce ne correspond à cette recherche pour le moment. Revenez bientôt !</div>';
+      annoncesActuelles = data.annonces || [];
+
+      if (annoncesActuelles.length === 0) {
         count.textContent = '0 annonce';
+        afficherAnnonces([]);
         return;
       }
 
       count.textContent = `${data.count} annonce${data.count > 1 ? 's' : ''}`;
-
-      grid.innerHTML = data.annonces.map(a => `
-        <a href="annonce.html?id=${a.id}" class="card" data-id="${a.id}">
-          <div class="card-image">
-            <span class="card-type-tag">${iconeType(a.type)}</span>
-            Photo à venir
-          </div>
-          <div class="card-body">
-            <h3>${a.titre}</h3>
-            <div class="card-location">${a.quartier ? a.quartier + ', ' : ''}${a.ville}</div>
-            <div class="card-footer">
-              <div class="card-price">${formaterPrix(a.prix)} <span>FCFA${a.type === 'terrain' || a.type === 'boutique' ? '' : '/mois'}</span></div>
-              <span class="verified-badge">✓ Vérifié</span>
-            </div>
-          </div>
-        </a>
-      `).join('');
+      afficherAnnonces(annoncesActuelles);
     } catch (error) {
       grid.innerHTML = '<div class="empty-state">Impossible de charger les annonces pour le moment. Réessayez dans un instant.</div>';
       count.textContent = '';
