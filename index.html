@@ -426,7 +426,7 @@
     .hero h1 { font-size: 48px; }
     .hero p { font-size: 18px; }
     .search-card {
-      grid-template-columns: 1.3fr 1fr 1fr auto;
+      grid-template-columns: 1.3fr 1fr auto;
       align-items: end;
       padding: 24px;
     }
@@ -486,10 +486,6 @@
         <option value="terrain">Terrain</option>
         <option value="boutique">Boutique</option>
       </select>
-    </div>
-    <div class="search-field">
-      <label for="search-prix">Prix max (FCFA)</label>
-      <input type="number" id="search-prix" placeholder="Ex : 150000">
     </div>
     <button class="search-btn" onclick="rechercherAnnonces()">Rechercher</button>
   </div>
@@ -607,12 +603,10 @@
   function rechercherAnnonces() {
     const ville = document.getElementById('search-ville').value;
     const type = document.getElementById('search-type').value;
-    const prix_max = document.getElementById('search-prix').value;
 
     const params = {};
     if (ville) params.ville = ville;
     if (type) params.type = type;
-    if (prix_max) params.prix_max = prix_max;
 
     chargerAnnonces(params);
   }
@@ -678,5 +672,5 @@
 </script>
 
 </body>
-      </html>
-  
+  </html>
+      
