@@ -317,6 +317,23 @@
     }
   }
 
+  function afficherCarte(annonce) {
+    if (!annonce.latitude || !annonce.longitude) return;
+
+    const bloc = document.getElementById('carte-bloc');
+    bloc.style.display = 'block';
+
+    const carte = L.map('carte', { zoomControl: false, attributionControl: false }).setView(
+      [annonce.latitude, annonce.longitude], 15
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+    }).addTo(carte);
+
+    L.marker([annonce.latitude, annonce.longitude]).addTo(carte);
+  }
+
   function afficherZoneContact(annonce) {
     const zone = document.getElementById('zone-contact');
     const token = localStorage.getItem('logis229_token');
@@ -382,21 +399,13 @@
     });
   }
 
-  function afficherCarte(annonce) {
-    if (!annonce.latitude || !annonce.longitude) return;
-
-    const bloc = document.getElementById('carte-bloc');
-    bloc.style.display = 'block';
-
-    const carte = L.map('carte', { zoomControl: false, attributionControl: false }).setView(
-      [annonce.latitude, annonce.longitude], 15
-    );
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-    }).addTo(carte);
-
-    L.marker([annonce.latitude, annonce.longitude]).addTo(carte);
+  function allerPublier() {
+    const token = localStorage.getItem('logis229_token');
+    if (token) {
+      window.location.href = 'publier.html';
+    } else {
+      window.location.href = 'connexion.html?redirect=publier.html';
+    }
   }
 
   async function chargerAnnonce() {
@@ -444,18 +453,8 @@
     }
   }
 
-  function allerPublier() {
-    const token = localStorage.getItem('logis229_token');
-    if (token) {
-      window.location.href = 'publier.html';
-    } else {
-      window.location.href = 'connexion.html?redirect=publier.html';
-    }
-  }
-
   chargerAnnonce();
 </script>
 
 </body>
-          </html>
-          
+</html>
