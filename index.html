@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -598,7 +598,7 @@
           <div class="card-location">${a.quartier ? a.quartier + ', ' : ''}${a.ville}</div>
           <div class="card-footer">
             <div class="card-price">${formaterPrix(a.prix)} <span>FCFA${a.type === 'terrain' || a.type === 'boutique' ? '' : '/mois'}</span></div>
-            <span class="verified-badge">✓ Vérifié</span>
+            ${a.proprietaire_verifie ? '<span class="verified-badge">✓ Vérifié</span>' : ''}
           </div>
         </div>
       </a>
@@ -707,5 +707,5 @@
 </script>
 
 </body>
-  </html>
-      
+      </html>
+        
