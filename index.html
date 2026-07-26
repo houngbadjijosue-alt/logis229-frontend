@@ -645,9 +645,24 @@
     if (token && user) {
       const lienMessages = document.createElement('a');
       lienMessages.href = 'messages.html';
-      lienMessages.textContent = 'Messages';
-      lienMessages.style.cssText = 'color:#FBF7F1; font-size:14px; font-weight:500; opacity:0.85;';
+      lienMessages.id = 'lien-messages';
+      lienMessages.style.cssText = 'color:#FBF7F1; font-size:14px; font-weight:500; opacity:0.85; display:flex; align-items:center; gap:5px;';
+      lienMessages.innerHTML = 'Messages';
       zone.insertBefore(lienMessages, zone.firstChild);
+
+      fetch('https://immo-benin-backend.onrender.com/api/messages/non-lus', {
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.total > 0) {
+            const badge = document.createElement('span');
+            badge.textContent = data.total;
+            badge.style.cssText = 'background:#C1502E; color:white; font-size:10px; font-weight:700; padding:1px 6px; border-radius:100px; opacity:1;';
+            lienMessages.appendChild(badge);
+          }
+        })
+        .catch(() => {});
 
       if (user.role === 'proprietaire') {
         const lienAnnonces = document.createElement('a');
@@ -663,5 +678,5 @@
 </script>
 
 </body>
-  </html>
+      </html>
   
