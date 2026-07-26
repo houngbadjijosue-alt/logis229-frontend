@@ -44,6 +44,7 @@
 
   a { text-decoration: none; color: inherit; }
 
+  /* ---------- HEADER ---------- */
   header {
     background: var(--navy);
     padding: 18px 24px;
@@ -106,6 +107,7 @@
     display: none;
   }
 
+  /* ---------- HERO ---------- */
   .hero {
     background: var(--navy);
     position: relative;
@@ -149,6 +151,7 @@
     margin: 0 auto 32px;
   }
 
+  /* Skyline signature graphic */
   .skyline {
     width: 100%;
     height: 60px;
@@ -156,6 +159,7 @@
     margin-top: 40px;
   }
 
+  /* ---------- SEARCH CARD ---------- */
   .search-card {
     background: var(--cream);
     border-radius: 14px;
@@ -211,6 +215,7 @@
   }
   .search-btn:hover { background: var(--terracotta-dark); }
 
+  /* ---------- TYPE PILLS ---------- */
   .type-pills {
     display: flex;
     gap: 10px;
@@ -236,6 +241,7 @@
     border-color: var(--terracotta);
   }
 
+  /* ---------- LISTINGS SECTION ---------- */
   .section {
     max-width: 1100px;
     margin: 0 auto;
@@ -358,6 +364,7 @@
     grid-column: 1 / -1;
   }
 
+  /* ---------- HOW IT WORKS ---------- */
   .steps-section {
     background: var(--cream-dim);
   }
@@ -388,6 +395,7 @@
   .step h3 { font-size: 16px; margin-bottom: 4px; }
   .step p { font-size: 14px; color: var(--slate-soft); }
 
+  /* ---------- FOOTER ---------- */
   footer {
     background: var(--navy);
     color: rgba(251,247,241,0.6);
@@ -411,6 +419,7 @@
     border-top: 1px solid rgba(251,247,241,0.12);
   }
 
+  /* ---------- RESPONSIVE (desktop) ---------- */
   @media (min-width: 768px) {
     nav.desktop-nav { display: flex; }
     .lang-toggle { display: block; }
@@ -457,6 +466,7 @@
     <p>Maisons, appartements, terrains et boutiques — publiés directement par les propriétaires, sans intermédiaire.</p>
   </div>
 
+  <!-- Signature skyline element -->
   <svg class="skyline" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
     <polyline points="0,60 0,40 40,40 40,25 80,25 80,45 130,45 130,15 145,15 145,45 200,45 200,30 260,30 260,50 310,50 310,20 330,20 330,50 400,50 400,35 460,35 460,10 480,10 480,35 540,35 540,48 600,48 600,25 650,25 650,45 720,45 720,20 745,20 745,45 810,45 810,35 870,35 870,50 930,50 930,15 960,15 960,50 1030,50 1030,30 1090,30 1090,45 1150,45 1150,20 1200,20 1200,60"
       fill="none" stroke="#C1502E" stroke-width="2" opacity="0.55"/>
@@ -486,6 +496,21 @@
     <button class="pill" data-type="appartement">Appartements</button>
     <button class="pill" data-type="terrain">Terrains</button>
     <button class="pill" data-type="boutique">Boutiques</button>
+  </div>
+
+  <div style="max-width:900px; margin:0 auto 40px; padding:0 24px; text-align:center;">
+    <button id="btn-filtres-avances" style="background:none; border:none; color:rgba(251,247,241,0.7); font-size:13px; text-decoration:underline; cursor:pointer; font-family:'Inter',sans-serif;">Filtres avancés</button>
+    <div id="filtres-avances" style="display:none; background:rgba(251,247,241,0.06); border-radius:10px; padding:16px; margin-top:12px; display:none; gap:12px; flex-wrap:wrap; justify-content:center;">
+      <div style="display:flex; flex-direction:column; gap:4px; text-align:left;">
+        <label style="font-size:11px; color:rgba(251,247,241,0.7);">Chambres min.</label>
+        <input type="number" id="filtre-chambres" min="0" style="border:1px solid rgba(251,247,241,0.2); border-radius:6px; padding:8px 10px; background:rgba(251,247,241,0.05); color:white; width:110px;">
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px; text-align:left;">
+        <label style="font-size:11px; color:rgba(251,247,241,0.7);">Superficie min. (m²)</label>
+        <input type="number" id="filtre-superficie" min="0" style="border:1px solid rgba(251,247,241,0.2); border-radius:6px; padding:8px 10px; background:rgba(251,247,241,0.05); color:white; width:130px;">
+      </div>
+      <button onclick="rechercherAnnonces()" style="align-self:flex-end; background:var(--terracotta); color:white; border:none; border-radius:6px; padding:8px 16px; font-weight:600; font-size:13px; cursor:pointer;">Appliquer</button>
+    </div>
   </div>
 </section>
 
@@ -628,13 +653,22 @@
   function rechercherAnnonces() {
     const ville = document.getElementById('search-ville').value;
     const type = document.getElementById('search-type').value;
+    const chambres = document.getElementById('filtre-chambres').value;
+    const superficie_min = document.getElementById('filtre-superficie').value;
 
     const params = {};
     if (ville) params.ville = ville;
     if (type) params.type = type;
+    if (chambres) params.chambres = chambres;
+    if (superficie_min) params.superficie_min = superficie_min;
 
     chargerAnnonces(params);
   }
+
+  document.getElementById('btn-filtres-avances').addEventListener('click', () => {
+    const bloc = document.getElementById('filtres-avances');
+    bloc.style.display = bloc.style.display === 'none' ? 'flex' : 'none';
+  });
 
   document.querySelectorAll('.pill').forEach(pill => {
     pill.addEventListener('click', () => {
@@ -645,7 +679,6 @@
       chargerAnnonces(type ? { type } : {});
     });
   });
-
   function allerPublier() {
     const token = localStorage.getItem('logis229_token');
     if (token) {
@@ -697,4 +730,4 @@
 </script>
 
 </body>
- </html>
+</html>
