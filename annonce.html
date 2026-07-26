@@ -233,9 +233,7 @@
           <div class="localisation" id="localisation"></div>
         </div>
 
-        <div class="badges-row">
-          <span class="verified-badge">✓ Propriétaire vérifié</span>
-        </div>
+        <div class="badges-row" id="badges-row"></div>
 
         <div class="specs-grid" id="specs-grid"></div>
 
@@ -421,6 +419,11 @@
       document.getElementById('prix').textContent = `${formaterPrix(a.prix)} FCFA`;
       document.getElementById('prix-unit').textContent = (a.type === 'terrain' || a.type === 'boutique') ? 'Prix' : 'par mois';
 
+      const badgesRow = document.getElementById('badges-row');
+      badgesRow.innerHTML = a.proprietaire_verifie
+        ? '<span class="verified-badge">✓ Propriétaire vérifié</span>'
+        : '<span style="font-size:12px; color:var(--slate-soft);">Propriétaire non encore vérifié</span>';
+
       const specsGrid = document.getElementById('specs-grid');
       specsGrid.innerHTML = construireSpecs(a).map(s => `
         <div class="spec-item">
@@ -454,5 +457,5 @@
 </script>
 
 </body>
-  </html>
-  
+          </html>
+          
